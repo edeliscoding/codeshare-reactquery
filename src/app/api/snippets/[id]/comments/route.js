@@ -6,36 +6,40 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import dbConnect from "@/lib/dbConnect";
 import { revalidatePath } from "next/cache";
 import mongoose from "mongoose";
-// export async function POST(request, { params }) {
-//   const { id } = params;
+export async function GET(req, { params }) {
+  const { id } = params;
 
-//   const session = await getServerSession(authOptions);
-//   if (!session) {
-//     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-//   }
+  try {
+    await dbConnect();
 
-//   try {
-//     await dbConnect();
-//     const { snippetId, content } = await request.json();
-//     console.log("from comments route", snippetId, comment);
+    // Fetch the snippet regardless of session state
+    // const snippet = await Snippet.findById(id).populate("comments");
+    const snippet = await Snippet.findById(id)
+      .populate({
+        path: "comments",
+        populate: {
+          path: "author",
+          select: "username",
+        },
+      })
+      .lean();
+    console.log("Snippet from database:", snippet);
+    if (!snippet) {
+      return NextResponse.json({ error: "Snippet not found" }, { status: 404 });
+    }
+    // Get the session (check if user is authenticated)
+    const session = await getServerSession(authOptions);
 
-//     const comment = await Comment.create({
-//       content,
-//       author: session.user.id,
-//       snippet: snippetId,
-//     });
-//     console.log("New comment created:", comment);
-
-//     await Snippet.findByIdAndUpdate(snippetId, {
-//       $push: { comments: comment._id },
-//     });
-//     revalidatePath("/snippets/[id]");
-//     revalidatePath("/");
-//     return NextResponse.json(comment, { status: 201 });
-//   } catch (error) {
-//     return NextResponse.json({ error: error.message }, { status: 400 });
-//   }
-// }
+    // Return the snippet data, can include user-specific data if authenticated
+    return NextResponse.json(snippet.comments, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching snippet:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error", details: error.message },
+      { status: 500 }
+    );
+  }
+}
 export async function POST(request, { params }) {
   const { id } = params;
 

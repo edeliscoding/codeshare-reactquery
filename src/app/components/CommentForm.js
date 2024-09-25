@@ -3,35 +3,62 @@
 import { useState } from "react";
 import React from "react";
 import { useAddComment, useSnippet } from "../hooks/useSnippetHooks";
-import CommentList from "./CommentList";
+import CommentList from "@/app/components/CommentList";
+import { useMutation, useQueryClient, useQuery } from "react-query";
 
 export default function CommentForm({ snippetId }) {
-  const [content, setContent] = useState("");
-  const addComment = useAddComment();
-  const handleAddComment = (event) => {
-    event.preventDefault();
-    // const newComment = {
-    //   content: comment,
-    //   //   author: "current-user-id", // You'll need to get this from your auth system
-    //   //   snippet: id,
-    //   snippet: snippet,
-    // };
-    addComment.mutate({ snippetId: snippetId, content: content });
-    event.target.reset();
+  // const [content, setContent] = useState("");
+  // const addComment = useAddComment();
+  const queryClient = useQueryClient();
+  // const {
+  //   data: comments,
+  //   isLoading,
+  //   error,
+  // } = useQuery({
+  //   queryKey: ["comments", snippetId],
+  //   queryFn: () => fetchComments(snippetId),
+  // });
+
+  const [newComment, setNewComment] = useState("");
+  // console.log("comments from useQuery", comments);
+  const submitCommentMutation = useMutation({
+    mutationFn: async (commentContent) => {
+      const res = await fetch(`/api/snippets/${snippetId}/comments`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: commentContent }),
+      });
+      if (!res.ok) {
+        throw new Error("Failed to submit comment");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["comments", snippetId]);
+      // queryClient.invalidateQueries(["snippets"]);
+      setNewComment("");
+    },
+  });
+
+  const handleSubmitComment = (e) => {
+    e.preventDefault();
+    submitCommentMutation.mutate(newComment);
   };
+
   const { data: snippet, isLoading: snippetLoading } = useSnippet(snippetId);
 
-  if (snippet?.comments.length < 1 && snippetLoading)
-    return <div>Loading...</div>;
+  if (snippetLoading) return <div>Loading...</div>;
+
   return (
-    <section className="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased">
+    <section className="bg-white dark:bg-gray-900 py-8 lg:py-12 antialiased divide">
       <div className="max-w-2xl mx-auto px-4">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">
             Discussion ({snippet?.comments.length})
           </h2>
         </div>
-        <form className="mb-6" onSubmit={handleAddComment}>
+        {/* <CommentList snippetId={snippetId} comments={comments} /> */}
+        <form className="mb-6" onSubmit={handleSubmitComment}>
           <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
             <label htmlFor="comment" className="sr-only">
               Your comment
@@ -40,11 +67,10 @@ export default function CommentForm({ snippetId }) {
               id="content"
               rows={6}
               name="content"
-              onChange={(e) => setContent(e.target.value)}
+              onChange={(e) => setNewComment(e.target.value)}
               className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
               placeholder="Write a comment..."
               required=""
-              value={content}
             />
           </div>
           <button
@@ -54,7 +80,8 @@ export default function CommentForm({ snippetId }) {
             Post comment
           </button>
         </form>
-        <CommentList snippetId={snippetId} comments={snippet?.comments} />
+        {/* <CommentList snippetId={snippetId} comments={snippet?.comments} /> */}
+        {/* <CommentList snippetId={snippetId} comments={comments} /> */}
       </div>
     </section>
   );

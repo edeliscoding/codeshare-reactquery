@@ -3,20 +3,92 @@ import { useSnippets } from "@/app/hooks/useSnippetHooks";
 import { useRouter } from "next/navigation";
 import moment from "moment";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function SnippetList() {
   const router = useRouter();
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchText, setSearchText] = useState("");
   const { data: snippets, isLoading, error } = useSnippets();
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
+
+  // search functionality
+  const filteredSnippets = snippets.filter(
+    (snippet) =>
+      snippet.code.toLowerCase().includes(searchText.toLowerCase()) ||
+      snippet.language.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   // const isAuthor = snippet.userId === currentUser?.id;
   const avatar =
     "https://img.freepik.com/premium-vector/cartoon-character-with-white-button-his-shirt_969863-353675.jpg?w=300";
   return (
     <div>
-      {snippets.map((snippet) => (
+      <div className="flex items-center justify-between bg-[#111a22] p-4 pb-2">
+        <h2 className="text-white text-lg font-bold leading-tight tracking-[-0.015em] pl-12">
+          Home
+        </h2>
+        <div className="flex items-center gap-2">
+          {showSearch ? (
+            <span className="inline-flex gap-2">
+              <input
+                type="text"
+                placeholder="Search snippets..."
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                className="bg-gray-700 text-white px-2 py-1 rounded"
+              />
+              <button
+                onClick={() => setShowSearch(false)}
+                className="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 bg-transparent text-white gap-2 text-base font-bold leading-normal tracking-[0.015em]"
+              >
+                <div
+                  className="text-white"
+                  data-icon="MagnifyingGlass"
+                  data-size="24px"
+                  data-weight="regular"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24px"
+                    height="24px"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
+                  >
+                    <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z" />
+                  </svg>
+                </div>
+              </button>
+            </span>
+          ) : (
+            <button
+              onClick={() => setShowSearch(true)}
+              className="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 bg-transparent text-white gap-2 text-base font-bold leading-normal tracking-[0.015em]"
+            >
+              <div
+                className="text-white"
+                data-icon="MagnifyingGlass"
+                data-size="24px"
+                data-weight="regular"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24px"
+                  height="24px"
+                  fill="currentColor"
+                  viewBox="0 0 256 256"
+                >
+                  <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z" />
+                </svg>
+              </div>
+            </button>
+          )}
+        </div>
+      </div>
+      {/* {snippets.map((snippet) => ( */}
+      {filteredSnippets.map((snippet) => (
         <div
           className="container mx-auto p-4 cursor-pointer hover:bg-slate-800"
           onClick={() => router.push(`/snippets/${snippet._id}`)}

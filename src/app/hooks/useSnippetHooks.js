@@ -5,17 +5,32 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
-// Create a custom hook that fetches snippet and comments together
-export const useSnippetWithComments = (id) => {
-  // Define the query function to fetch both snippet and comments
-  const fetchSnippetWithComments = async () => {
-    const { data } = await axios.get(`/api/snippets/${id}`);
-    return data; // data contains both `snippet` and `comments`
-  };
+// // Create a custom hook that fetches snippet and comments together
+// export const useSnippetWithComments = (id) => {
+//   // Define the query function to fetch both snippet and comments
+//   const fetchSnippetWithComments = async () => {
+//     const { data } = await axios.get(`/api/snippets/${id}`);
+//     return data; // data contains both `snippet` and `comments`
+//   };
 
-  // Use React Query's `useQuery` to fetch and cache the data
-  return useQuery(["snippetWithComments", id], fetchSnippetWithComments);
+//   // Use React Query's `useQuery` to fetch and cache the data
+//   return useQuery(["snippetWithComments", id], fetchSnippetWithComments);
+// };
+
+const fetchSnippetComments = async (snippetId) => {
+  const response = await fetch(`/api/snippets/${snippetId}/comments`);
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+  return response.json();
 };
+
+export function useSnippetComments(snippetId) {
+  return useQuery({
+    queryKey: ["snippetComments", snippetId],
+    queryFn: () => fetchSnippetComments(snippetId),
+  });
+}
 
 export const useSnippets = () => {
   return useQuery("snippets", () =>

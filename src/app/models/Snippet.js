@@ -77,5 +77,10 @@ const SnippetSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.models.Snippet ||
-  mongoose.model("Snippet", SnippetSchema);
+// export default mongoose.models.Snippet ||
+//   mongoose.model("Snippet", SnippetSchema);
+// Check if the model already exists, otherwise create it
+const Snippet =
+  mongoose.models.Snippet || mongoose.model("Snippet", SnippetSchema);
+
+export default Snippet;
