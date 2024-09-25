@@ -114,3 +114,26 @@ export const useDeleteComment = () => {
     }
   );
 };
+
+export default function useEditComment() {
+  const queryClient = useQueryClient();
+
+  const { mutateAsync: editComment } = useMutation(
+    async ({ commentId, content }) => {
+      const response = await axios.put(`/api/comments/${commentId}/`, {
+        content,
+      });
+      return response.data;
+    },
+    {
+      onSuccess: () => {
+        // Invalidate and refetch the comments query to reflect the updated comment
+        queryClient.invalidateQueries("comments");
+      },
+    }
+  );
+
+  return {
+    editComment,
+  };
+}

@@ -1,17 +1,31 @@
 import React, { useEffect, useRef, useState } from "react";
 import moment from "moment";
+import useEditComment from "../hooks/useSnippetHooks";
+import { useSession } from "next-auth/react";
 
 export default function CommentList({ comments, snippetId }) {
   console.log("comments from comment List", comments);
+
   const [isEditing, setIsEditing] = useState(false);
+  const [isEditingId, setIsEditingId] = useState(null);
   //   const [isOpen, setIsOpen] = useState(false);
   const [openDropdownId, setOpenDropdownId] = useState(null);
 
+  const { data: currentUser } = useSession();
+
+  const currentUserId = currentUser?.user.id;
+
+  const { editComment } = useEditComment();
   const toggleDropdown = (id) => {
     setOpenDropdownId((prevId) => (prevId === id ? null : id));
   };
-  const handleUpdateComment = (commentId, newContent) => {
-    setIsEditing(false);
+  const handleUpdateComment = async (commentId, newContent) => {
+    try {
+      await editComment({ commentId, content: newContent });
+      setIsEditingId(null); // Exit edit mode after successful update
+    } catch (error) {
+      console.error("Failed to update comment", error);
+    }
   };
 
   const dropdownRef = useRef(null);
@@ -43,7 +57,7 @@ export default function CommentList({ comments, snippetId }) {
                       src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
                       alt="Michael Gough"
                     />
-                    {comment.authorName}
+                    {comment.author.username}
                   </p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     <time
@@ -55,23 +69,25 @@ export default function CommentList({ comments, snippetId }) {
                     </time>
                   </p>
                 </div>
-                <button
-                  id={`dropdownButton${comment._id}`}
-                  onClick={() => toggleDropdown(comment._id)}
-                  className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-                  type="button"
-                >
-                  <svg
-                    className="w-4 h-4"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    viewBox="0 0 16 3"
+                {currentUserId === comment.author._id && (
+                  <button
+                    id={`dropdownButton${comment._id}`}
+                    onClick={() => toggleDropdown(comment._id)}
+                    className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                    type="button"
                   >
-                    <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
-                  </svg>
-                  <span className="sr-only">Comment settings</span>
-                </button>
+                    <svg
+                      className="w-4 h-4"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 16 3"
+                    >
+                      <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
+                    </svg>
+                    <span className="sr-only">Comment settings</span>
+                  </button>
+                )}
                 {/* Dropdown menu */}
                 {/* <div
                 id="dropdownComment1"
@@ -121,7 +137,8 @@ export default function CommentList({ comments, snippetId }) {
                           // ref={useEditRef}
                           className="block w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600"
                           role="menuitem"
-                          onClick={() => setIsEditing(true)}
+                          // onClick={() => setIsEditing(true)}
+                          onClick={() => setIsEditingId(comment._id)}
                         >
                           Edit
                         </button>
@@ -139,7 +156,7 @@ export default function CommentList({ comments, snippetId }) {
                   </div>
                 )}
               </footer>
-              {isEditing && (
+              {isEditingId === comment._id ? (
                 <input
                   type="text"
                   defaultValue={comment.content}
@@ -149,43 +166,37 @@ export default function CommentList({ comments, snippetId }) {
                   className="w-full text-gray-900 p-2"
                   onFocus={() => setOpenDropdownId(null)}
                 />
+              ) : (
+                <p className="text-gray-500 dark:text-gray-400">
+                  {comment.content}
+                </p>
               )}
-              <p className="text-gray-500 dark:text-gray-400">
-                {comment.content}
-              </p>
-              <div className="flex items-center mt-4 space-x-4">
-                <button
-                  type="button"
-                  className="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400 font-medium"
-                >
-                  <svg
-                    className="mr-1.5 w-3.5 h-3.5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 20 18"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 5h5M5 8h2m6-3h2m-5 3h6m2-7H2a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h3v5l5-5h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1Z"
-                    />
-                  </svg>
-                  Reply
-                </button>
-              </div>
             </article>
           </div>
         ))}
     </div>
-    // <div>
-    //   {comments?.map((comment) => (
-    //     <div key={comment._id}>
-    //       <p>{comment.content}</p>
-    //     </div>
-    //   ))}
-    // </div>
   );
 }
+// <div className="flex items-center mt-4 space-x-4">
+//    <button
+//     type="button"
+//     className="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400 font-medium"
+//   >
+//     <svg
+//       className="mr-1.5 w-3.5 h-3.5"
+//       aria-hidden="true"
+//       xmlns="http://www.w3.org/2000/svg"
+//       fill="none"
+//       viewBox="0 0 20 18"
+//     >
+//       <path
+//         stroke="currentColor"
+//         strokeLinecap="round"
+//         strokeLinejoin="round"
+//         strokeWidth={2}
+//         d="M5 5h5M5 8h2m6-3h2m-5 3h6m2-7H2a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h3v5l5-5h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1Z"
+//       />
+//     </svg>
+//     Reply
+//   </button>
+// </div>

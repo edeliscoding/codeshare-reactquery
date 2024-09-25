@@ -1,8 +1,8 @@
 // app/api/comments/[id]/route.js
 import { NextResponse } from "next/server";
-import dbConnect from "../../../lib/dbConnect";
-import Comment from "../../../models/Comment";
-import Snippet from "../../../models/Snippet";
+import dbConnect from "@/lib/dbConnect";
+import Comment from "@/app/models/Comment";
+import Snippet from "@/app/models/Snippet";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { revalidatePath } from "next/cache";
