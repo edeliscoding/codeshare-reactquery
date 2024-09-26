@@ -19,7 +19,10 @@ export async function GET(req) {
     //   // If the user is authenticated, fetch their specific snippets
     //   snippets = await Snippet.find();
     // }
-    const snippets = await Snippet.find({});
+    const snippets = await Snippet.find().populate({
+      path: "userId",
+      select: "username",
+    });
     if (!snippets) {
       return NextResponse.json({ error: "No snippets found" }, { status: 404 });
     }

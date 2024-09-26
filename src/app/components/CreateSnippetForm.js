@@ -44,7 +44,10 @@ export default function CreateSnippetForm() {
   //   return <p>Loading...</p>;
   // }
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 text-gray-800">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 text-gray-800 container mx-auto max-w-6xl"
+    >
       <div>
         {error && <p className="text-red-500">{error}</p>}
         <label
@@ -113,7 +116,9 @@ export default function CreateSnippetForm() {
         >
           <option value="javascript">JavaScript</option>
           <option value="python">Python</option>
-          <option value="cpp">C++</option>
+          <option value="php">PhP</option>
+          <option value="c++">C++</option>
+          <option value="java">Java</option>
           {/* Add more language options as needed */}
         </select>
       </div>

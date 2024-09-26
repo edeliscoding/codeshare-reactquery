@@ -10,6 +10,7 @@ export default function SnippetList() {
   const [showSearch, setShowSearch] = useState(false);
   const [searchText, setSearchText] = useState("");
   const { data: snippets, isLoading, error } = useSnippets();
+  console.log("snippets", snippets);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -24,6 +25,8 @@ export default function SnippetList() {
   // const isAuthor = snippet.userId === currentUser?.id;
   const avatar =
     "https://img.freepik.com/premium-vector/cartoon-character-with-white-button-his-shirt_969863-353675.jpg?w=300";
+  const defaultImage =
+    "https://cdn.usegalileo.ai/stability/602d2985-3625-4fba-8aaf-1de4af6f2943.png";
   return (
     <div>
       <div className="flex items-center justify-between bg-[#111a22] p-4 pb-2">
@@ -91,7 +94,11 @@ export default function SnippetList() {
       {filteredSnippets.map((snippet) => (
         <div
           className="container mx-auto p-4 cursor-pointer hover:bg-slate-800"
-          onClick={() => router.push(`/snippets/${snippet._id}`)}
+          onClick={() =>
+            router.push(
+              `/snippets/${snippet._id}?username=${snippet.userId.username}`
+            )
+          }
         >
           <link
             rel="icon"
@@ -104,15 +111,16 @@ export default function SnippetList() {
               {/* <div className="flex w-12 items-center justify-end">
                 <button className="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 bg-transparent text-white gap-2 text-base font-bold leading-normal tracking-[0.015em] min-w-0 p-0"></button>
               </div> */}
-              <div className="flex items-center gap-4 bg-[#111a22] px-4 min-h-[72px] py-2">
-                <div
-                  className="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-fit hidden md:flex"
-                  style={{
-                    backgroundImage:
-                      'url("https://cdn.usegalileo.ai/stability/602d2985-3625-4fba-8aaf-1de4af6f2943.png")',
-                  }}
-                />
-                <div className="flex flex-col justify-center">
+              <div className="flex items-center gap-5 bg-[#111a22] px-3 min-h-[72px] py-2">
+                <div className="flex flex-col rounded-full h-20 w-fit gap-1">
+                  <img
+                    className="h-14 w-14 rounded-full md:block sm:w-12 sm:h-12 ml-1"
+                    src={snippet.image || defaultImage}
+                  />
+                  <span className="mr-[12px">{snippet.userId.username}</span>
+                </div>
+
+                <div className="flex flex-col justify-center pb-5">
                   <p className="text-white text-base font-medium leading-normal line-clamp-1">
                     {snippet.language}
                   </p>
@@ -129,7 +137,7 @@ export default function SnippetList() {
                 
               </div> */}
             </div>
-            <div className="flex flex-wrap gap-4 px-4 py-2 py-2 justify-between">
+            <div className="flex flex-wrap gap-4 px-4 py-2 justify-between">
               <div className="flex items-center justify-center gap-2 px-3 py-2">
                 <div
                   className="text-[#93adc8]"
