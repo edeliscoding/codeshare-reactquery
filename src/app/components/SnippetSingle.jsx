@@ -34,7 +34,7 @@ export default function SnippetSingle({ snippet }) {
   const username = searchParams.get("username");
 
   const snippetID = snippet?._id;
-  console.log("snippetfrom single", snippet);
+
   //   const commentsRef = useRef(null);
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState("");
@@ -198,7 +198,7 @@ export default function SnippetSingle({ snippet }) {
         </div>
         {showComments && (
           <div>
-            <CommentList comments={comments} />
+            <CommentList comments={comments} snippetId={snippet._id} />
 
             <CommentForm snippetId={snippet._id} />
           </div>

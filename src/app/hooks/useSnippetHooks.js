@@ -109,7 +109,8 @@ export const useDeleteComment = () => {
     {
       onSuccess: (data, variables) => {
         queryClient.invalidateQueries(["comments", variables.snippetId]);
-        queryClient.invalidateQueries(["snippet", variables.snippetId]);
+        // queryClient.invalidateQueries(["snippet", variables.snippetId]);
+        toast.success("Comment deleted successfully!");
       },
     }
   );
@@ -129,6 +130,7 @@ export default function useEditComment() {
       onSuccess: () => {
         // Invalidate and refetch the comments query to reflect the updated comment
         queryClient.invalidateQueries("comments");
+        toast.success("Comment updated successfully!");
       },
     }
   );

@@ -10,7 +10,6 @@ export default function SnippetList() {
   const [showSearch, setShowSearch] = useState(false);
   const [searchText, setSearchText] = useState("");
   const { data: snippets, isLoading, error } = useSnippets();
-  console.log("snippets", snippets);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;

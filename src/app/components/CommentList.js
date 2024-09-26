@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import moment from "moment";
-import useEditComment from "../hooks/useSnippetHooks";
+import useEditComment, { useDeleteComment } from "../hooks/useSnippetHooks";
 import { useSession } from "next-auth/react";
+import { comment } from "postcss";
 
 export default function CommentList({ comments, snippetId }) {
-  console.log("comments from comment List", comments);
-
   const [isEditing, setIsEditing] = useState(false);
   const [isEditingId, setIsEditingId] = useState(null);
   //   const [isOpen, setIsOpen] = useState(false);
@@ -27,7 +26,7 @@ export default function CommentList({ comments, snippetId }) {
       console.error("Failed to update comment", error);
     }
   };
-
+  const deleteCommentMutation = useDeleteComment();
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -43,6 +42,14 @@ export default function CommentList({ comments, snippetId }) {
     };
   }, [dropdownRef]);
 
+  const handleDeleteComment = async (commentId) => {
+    console.log("commentId", commentId);
+    try {
+      await deleteCommentMutation.mutateAsync({ commentId, snippetId });
+    } catch (error) {
+      console.error("Failed to delete comment", error);
+    }
+  };
   return (
     <div className="container mx-auto max-w-3xl">
       {comments &&
@@ -125,7 +132,7 @@ export default function CommentList({ comments, snippetId }) {
               </div> */}
                 {openDropdownId === comment._id && (
                   <div
-                    className="absolute left-[624px] top-[15px] z-10 mt-2 w-32 origin-center bg-white border border-gray-200 divide-y divide-gray-100 rounded-lg shadow-lg dark:bg-gray-800 dark:divide-gray-600"
+                    className="absolute right-0 top-28 z-10 mt-2 w-32 origin-center bg-white border border-gray-200 divide-y divide-gray-100 rounded-lg shadow-lg dark:bg-gray-800 dark:divide-gray-600"
                     role="menu"
                   >
                     <ul
@@ -147,7 +154,7 @@ export default function CommentList({ comments, snippetId }) {
                         <button
                           className="block w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600"
                           role="menuitem"
-                          onClick={() => alert("Delete clicked")}
+                          onClick={() => handleDeleteComment(comment._id)}
                         >
                           Delete
                         </button>
