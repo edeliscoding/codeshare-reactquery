@@ -92,6 +92,7 @@ export default function SnippetList() {
       {/* {snippets.map((snippet) => ( */}
       {filteredSnippets.map((snippet) => (
         <div
+          key={snippet._id}
           className="container mx-auto p-4 cursor-pointer hover:bg-slate-800"
           onClick={() =>
             router.push(
