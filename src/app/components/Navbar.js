@@ -21,8 +21,11 @@ export default function Navbar() {
           </Link> */}
           {session ? (
             <>
-              <Link href="/snippets" className="text-gray-300 hover:text-white">
-                MY Snippets
+              <Link
+                href="/snippets/mine"
+                className="text-gray-300 hover:text-white"
+              >
+                My Snippets
               </Link>
               <Link href="/create" className="text-gray-300 hover:text-white">
                 Create Snippet
