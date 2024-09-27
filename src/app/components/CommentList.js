@@ -54,7 +54,7 @@ export default function CommentList({ comments, snippetId }) {
     <div className="container mx-auto max-w-3xl">
       {comments &&
         comments?.map((comment) => (
-          <div key={comment._id} className="mb-4" ref={dropdownRef}>
+          <div key={comment._id} className="mb-4 p-1" ref={dropdownRef}>
             <article className="relative p-6 text-base bg-white rounded-lg dark:bg-gray-900">
               <footer className="flex justify-between items-center mb-2">
                 <div className="flex items-center">

@@ -46,7 +46,7 @@ export default function CreateSnippetForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 text-gray-800 container mx-auto max-w-6xl"
+      className="space-y-4 text-gray-800 container mx-auto max-w-6xl p-2"
     >
       <div>
         {error && <p className="text-red-500">{error}</p>}

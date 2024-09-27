@@ -29,7 +29,7 @@ export default function SnippetList() {
   return (
     <div>
       <div className="flex items-center justify-between bg-[#111a22] p-4 pb-2">
-        <h2 className="text-white text-lg font-bold leading-tight tracking-[-0.015em] pl-12 sm:pl-4">
+        <h2 className="text-white text-lg font-bold leading-tight tracking-[-0.015em] md:pl-12  sm:pl-2">
           Home
         </h2>
         <div className="flex items-center gap-2">

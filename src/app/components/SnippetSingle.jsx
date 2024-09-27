@@ -164,7 +164,7 @@ export default function SnippetSingle({ snippet }) {
               </p>
             </div>
             {/* Button to toggle comments */}
-            <button onClick={handleShowComments}>
+            <button onClick={handleShowComments} className="text-white">
               {showComments ? "Hide Comments" : "Show Comments"}{" "}
               {snippet.comments.length}
             </button>
