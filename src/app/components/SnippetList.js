@@ -128,9 +128,14 @@ export default function SnippetList() {
                     {moment(snippet.createdAt).fromNow()}
                   </p>
                 </div>
-                <p className="text-white text-base font-normal leading-normal pb-3 pt-1 px-4">
-                  {snippet.code}
-                </p>
+                <div className="ml-8 px-4">
+                  <h2 className="text-white  font-bold leading-tight tracking-[-0.015em] text-lg">
+                    {snippet.title}
+                  </h2>
+                  <p className="text-white text-base font-small leading-normal p-2 bg-gray-800 mt-2">
+                    {snippet.code}
+                  </p>
+                </div>
               </div>
 
               {/* <div className="flex flex-wrap gap-4 px-4 py-2 py-2 justify-between">

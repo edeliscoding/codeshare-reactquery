@@ -6,7 +6,7 @@ import Snippet from "../models/Snippet";
 export const getMySnippets = async () => {
   await dbConnect();
   const currentUser = await getServerSession(authOptions);
-  console.log("currentUser", currentUser);
+  // console.log("currentUser", currentUser);
 
   if (!currentUser) {
     return [];

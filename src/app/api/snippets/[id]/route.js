@@ -16,7 +16,7 @@ export async function GET(req, { params }) {
     // Fetch the snippet regardless of session state
     // const snippet = await Snippet.findById(id).populate("comments");
     const snippet = await Snippet.findById(id);
-    console.log("Snippet from database:", snippet);
+    // console.log("Snippet from database:", snippet);
 
     if (!snippet) {
       return NextResponse.json({ error: "Snippet not found" }, { status: 404 });

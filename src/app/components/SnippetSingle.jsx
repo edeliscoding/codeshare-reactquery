@@ -119,6 +119,7 @@ export default function SnippetSingle({ snippet }) {
               {snippet.code}
             </p> */}
           </div>
+          <h2 className="text-center font-bold text-lg">{snippet.title}</h2>
           <div className="p-4 text-gray-900">
             <SyntaxHighlighter
               language={snippet.language}
