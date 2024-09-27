@@ -29,7 +29,7 @@ export default function SnippetList() {
   return (
     <div>
       <div className="flex items-center justify-between bg-[#111a22] p-4 pb-2">
-        <h2 className="text-white text-lg font-bold leading-tight tracking-[-0.015em] pl-12">
+        <h2 className="text-white text-lg font-bold leading-tight tracking-[-0.015em] pl-12 sm:pl-4">
           Home
         </h2>
         <div className="flex items-center gap-2">
@@ -40,7 +40,7 @@ export default function SnippetList() {
                 placeholder="Search snippets..."
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
-                className="bg-gray-700 text-white px-2 py-1 rounded"
+                className="bg-gray-700 text-white px-2 py-1 rounded w-full sm:w-40"
               />
               <button
                 onClick={() => setShowSearch(false)}
@@ -89,7 +89,7 @@ export default function SnippetList() {
           )}
         </div>
       </div>
-      {/* {snippets.map((snippet) => ( */}
+
       {filteredSnippets.map((snippet) => (
         <div
           key={snippet._id}
@@ -100,111 +100,78 @@ export default function SnippetList() {
             )
           }
         >
-          <link
-            rel="icon"
-            type="image/x-icon"
-            href="data:image/x-icon;base64,"
-          />
-
           <div>
-            <div className="flex items-center bg-[#111a22] p-4 pb-2 justify-between">
-              {/* <div className="flex w-12 items-center justify-end">
-                <button className="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 bg-transparent text-white gap-2 text-base font-bold leading-normal tracking-[0.015em] min-w-0 p-0"></button>
-              </div> */}
+            <div className="flex flex-col sm:flex-row items-center bg-[#111a22] p-4 pb-2 justify-between">
               <div className="flex items-center gap-5 bg-[#111a22] px-3 min-h-[72px] py-2">
                 <div className="flex flex-col rounded-full h-20 w-fit gap-1">
                   <img
                     className="h-14 w-14 rounded-full md:block sm:w-12 sm:h-12 ml-1"
                     src={snippet.image || defaultImage}
                   />
-                  <span className="mr-[12px">{snippet.userId.username}</span>
+                  <span className="mr-[12px] text-xs sm:text-sm">
+                    {snippet.userId.username}
+                  </span>
                 </div>
-
                 <div className="flex flex-col justify-center pb-5">
                   <p className="text-white text-base font-medium leading-normal line-clamp-1">
                     {snippet.language}
                   </p>
-                  <p className="text-[#93adc8] text-sm font-normal leading-normal line-clamp-2">
+                  <p className="text-[#93adc8] text-xs sm:text-sm font-normal leading-normal line-clamp-2">
                     {moment(snippet.createdAt).fromNow()}
                   </p>
                 </div>
-                <div className="ml-8 px-4">
-                  <h2 className="text-white  font-bold leading-tight tracking-[-0.015em] text-lg">
-                    {snippet.title}
-                  </h2>
-                  <p className="text-white text-base font-small leading-normal p-2 bg-gray-800 mt-2">
-                    {snippet.code}
-                  </p>
-                </div>
               </div>
-
-              {/* <div className="flex flex-wrap gap-4 px-4 py-2 py-2 justify-between">
-                
-              </div> */}
+              <div className="ml-0 sm:ml-8 px-4 text-center sm:text-left">
+                <h2 className="text-white font-bold leading-tight tracking-[-0.015em] text-lg sm:text-xl">
+                  {snippet.title}
+                </h2>
+                <p className="text-white text-xs sm:text-base font-small leading-normal p-2 bg-gray-800 mt-2">
+                  {snippet.code}
+                </p>
+              </div>
             </div>
-            <div className="flex flex-wrap gap-4 px-4 py-2 justify-between">
+
+            <div className="flex flex-wrap gap-2 sm:gap-4 px-4 py-2 justify-between">
               <div className="flex items-center justify-center gap-2 px-3 py-2">
-                <div
-                  className="text-[#93adc8]"
-                  data-icon="ArrowUp"
-                  data-size="24px"
-                  data-weight="regular"
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24px"
+                  height="24px"
+                  fill="currentColor"
+                  viewBox="0 0 256 256"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24px"
-                    height="24px"
-                    fill="currentColor"
-                    viewBox="0 0 256 256"
-                  >
-                    <path d="M205.66,117.66a8,8,0,0,1-11.32,0L136,59.31V216a8,8,0,0,1-16,0V59.31L61.66,117.66a8,8,0,0,1-11.32-11.32l72-72a8,8,0,0,1,11.32,0l72,72A8,8,0,0,1,205.66,117.66Z" />
-                  </svg>
-                </div>
-                <p className="text-[#93adc8] text-[13px] font-bold leading-normal tracking-[0.015em]">
+                  <path d="M205.66,117.66a8,8,0,0,1-11.32,0L136,59.31V216a8,8,0,0,1-16,0V59.31L61.66,117.66a8,8,0,0,1-11.32-11.32l72-72a8,8,0,0,1,11.32,0l72,72A8,8,0,0,1,205.66,117.66Z" />
+                </svg>
+                <p className="text-[#93adc8] text-xs sm:text-[13px] font-bold leading-normal">
                   {snippet.upvotes.length}
                 </p>
               </div>
+
               <div className="flex items-center justify-center gap-2 px-3 py-2">
-                <div
-                  className="text-[#93adc8]"
-                  data-icon="ChatTeardropText"
-                  data-size="24px"
-                  data-weight="regular"
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24px"
+                  height="24px"
+                  fill="currentColor"
+                  viewBox="0 0 256 256"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24px"
-                    height="24px"
-                    fill="currentColor"
-                    viewBox="0 0 256 256"
-                  >
-                    <path d="M168,112a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,112Zm-8,24H96a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16Zm72-12A100.11,100.11,0,0,1,132,224H47.67A15.69,15.69,0,0,1,32,208.33V124a100,100,0,0,1,200,0Zm-16,0a84,84,0,0,0-168,0v84h84A84.09,84.09,0,0,0,216,124Z" />
-                  </svg>
-                </div>
-                <p className="text-[#93adc8] text-[13px] font-bold leading-normal tracking-[0.015em]">
+                  <path d="M168,112a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,112Zm-8,24H96a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16Zm72-12A100.11,100.11,0,0,1,132,224H47.67A15.69,15.69,0,0,1,32,208.33V124a100,100,0,0,1,200,0Zm-16,0a84,84,0,0,0-168,0v84h84A84.09,84.09,0,0,0,216,124Z" />
+                </svg>
+                <p className="text-[#93adc8] text-xs sm:text-[13px] font-bold leading-normal">
                   {snippet.comments.length}
                 </p>
               </div>
+
               <div className="flex items-center justify-center gap-2 px-3 py-2">
-                <div
-                  className="text-[#93adc8]"
-                  data-icon="Heart"
-                  data-size="24px"
-                  data-weight="regular"
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24px"
+                  height="24px"
+                  fill="currentColor"
+                  viewBox="0 0 256 256"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24px"
-                    height="24px"
-                    fill="currentColor"
-                    viewBox="0 0 256 256"
-                  >
-                    <path d="M178,32c-20.65,0-38.73,8.88-50,23.89C116.73,40.88,98.65,32,78,32A62.07,62.07,0,0,0,16,94c0,70,103.79,126.66,108.21,129a8,8,0,0,0,7.58,0C136.21,220.66,240,164,240,94A62.07,62.07,0,0,0,178,32ZM128,206.8C109.74,196.16,32,147.69,32,94A46.06,46.06,0,0,1,78,48c19.45,0,35.78,10.36,42.6,27a8,8,0,0,0,14.8,0c6.82-16.67,23.15-27,42.6-27a46.06,46.06,0,0,1,46,46C224,147.61,146.24,196.15,128,206.8Z" />
-                  </svg>
-                </div>
-                <p className="text-[#93adc8] text-[13px] font-bold leading-normal tracking-[0.015em]">
-                  {snippet.likes.length}
-                </p>
+                  <path d="M178,32c-20.65,0-38.73,8.88-50,23.89C116.73,40.88,98.65,32,78,32A62.07,62.07,0,0,0,16,94c0,70,103.79,126.66,108.21,129a8,8,0,0,0,7.58,0C136.21,220.66,240,164,240,94A62.07,62.07,0,0,0,178,32ZM128,206.8C109.74,196.16,32,147.69,32,94A46.06,46.06,0,0,1,78,48c19.45,0,35.78,10.36,42.6,27a8,8,0,0,0,14.8,0C142.22,58.36,158.55,48,178,48a46.06,46.06,0,0,1,46,46C224,147.69,146.26,196.16,128,206.8Z" />
+                </svg>
               </div>
             </div>
           </div>
